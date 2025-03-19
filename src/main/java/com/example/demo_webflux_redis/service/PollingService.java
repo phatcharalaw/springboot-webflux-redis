@@ -22,20 +22,6 @@ public class PollingService {
     private final ReactiveRedisTemplate<String, String> redisTemplate;
     private final ReactiveRedisConnectionFactory connectionFactory;
     private final ReactiveRedisOperations<String, Object> redisOperations;
-/*    public String pollData(HttpHeaders httpHeaders) {
-        String callbackChannel = "callback:" + UUID.randomUUID();
-        log.info(callbackChannel);
-
-        redisTemplate.listenToChannel(callbackChannel)
-                .doOnNext(msg -> {
-                    log.info("Message received: {}", msg);
-                })
-                .take(Duration.ofSeconds(60))
-                .timeout(Duration.ofSeconds(60), Mono.error(new TimeoutException("Callback not received within timeout")))
-                .subscribe();
-
-        return callbackChannel;
-    }    */
 
     public String pollData(HttpHeaders httpHeaders) {
         String callbackChannel = "callback:" + UUID.randomUUID();
@@ -68,7 +54,5 @@ public class PollingService {
 
         log.info("Received data {}", callbackChannel);
         redisOperations.convertAndSend(callbackChannel, "READY").then().block();
-        //return redisTemplate.convertAndSend(callbackChannel, "READY");
-        // return "Done";
     }
 }
